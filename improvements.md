@@ -41,3 +41,6 @@
 ## Documentation
 * Add comments to specific logical junctions or where needed, and <summary> to all methods and classes.
 * Consider writing to a log file if issues come up so the user can view what went wrong
+
+## Persistance
+* Consider storing user data in file, such as win history and such. SqlLite may be used but super bloated for the need. simple text file is good.
