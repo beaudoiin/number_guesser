@@ -19,6 +19,7 @@
   ## Logic
 * Files need to be cleaned up on terminate if using base64 temp folder, as base 64 is persistant
 * Review exceptions and null value possabilities
+* review permissions of methods and values to prevent reading where it shouldnt be read. this will prevent bad progaramming practices when implimenting methods. Especially important for SoundEngine.
 
   ## Sound
 * Imrpove sound bytes and character profiles to have better/funner options. (no more then maybe 6)
