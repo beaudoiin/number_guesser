@@ -1,6 +1,7 @@
 ## Required improvements ##
   ## General
 * Name spaces into one for Audio Engine for reuse and one for the main program
+* Give version number to exe file and version number on the splash screen and in the Program Class comment to help link what is being run
 
   ## Display
 * When a player wins or loses, the word Win/Lose with player name needs to be displayed
