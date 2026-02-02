@@ -43,4 +43,4 @@
 * Consider writing to a log file if issues come up so the user can view what went wrong
 
 ## Persistance
-* Consider storing user data in file, such as win history and such. SqlLite may be used but super bloated for the need. simple text file is good.
+* Consider storing user data in file, such as win history and such. SqlLite may be used but super bloated for the need. simple text file is good. Practic eencoding the string so that its  harder to edit. Practice.
