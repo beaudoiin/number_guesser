@@ -9,6 +9,13 @@
 * All text displayed whould have a single white space on a new line to pad from the top
 * Consider always printing one blank line above the header when header is printed for padding.
 
+  ## Game Play
+* Keep track of wins and looses in multiplayer so users can see how got the best.
+* Increase to a higher level such as numbers up to 1000
+* Improve hint modes to provide more intersting moments
+* consider removing liar mode based on user feedback
+* single Player give the user points, and allow them to unlock a special souind byte based on their points (may be a dumb idea)
+  
   ## Logic
 * Files need to be cleaned up on terminate if using base64 temp folder, as base 64 is persistant
 * Review exceptions and null value possabilities
@@ -19,6 +26,7 @@
   ## Menu System
 * Options should include turning on and off specific sound such as musc, vs gui sfx, vs regular sounds bytes.
 * Options should allow user to use left and right arrow key instead of enter
+* Option to remove lying bot givng fake hints
 
   ## Sound Engine 
 * Sound Engine needs a total rework
