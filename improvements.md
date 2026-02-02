@@ -30,6 +30,12 @@
 * Options should include turning on and off specific sound such as musc, vs gui sfx, vs regular sounds bytes.
 * Options should allow user to use left and right arrow key instead of enter
 * Option to remove lying bot givng fake hints
+* Consider allowing the menu to be a longer list with a limit of 5, top 2 and and bottom 2 will be semi transparent, ie blend the background color and font color for new color.
+  Consider formatting, this is just a guideline
+  This should allow of the menu to cycle around like a roller index, thus if we have a menu with 20 things it will be esier to see them all.
+* Consider a max options allowed in a row, then introduce new formatted row that checks the string length of the first menu, and places specific characrs over by adding the extra tabs or whitespace.
+  This allows for it to look like a grid or side by side list. Selector now should have the feature to go up, and, left and right, enter allows editing, enter allows accept. (Maybe just using down arrows and cycling throgh is enough)
+  
 
 ## Sound Engine 
 * Sound Engine needs a total rework
