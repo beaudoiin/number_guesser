@@ -1,4 +1,9 @@
 ## Ansi Fallback Program ##
+
+## UPDATE ##
+Now implemented in a new commit of Program.cs, including some rework of TextColorize which no longer uses a return string type, but does the console writing it's self.
+
+## ORG MSG ##
 This is a snipped of code I found to test for and adjust if ansi is not found on the console running the app.
 Review the code, learn/understand it and make adjusments, then consider adding it to the application.
 
