@@ -41,6 +41,9 @@ namespace test2
         private static bool option_sound_on = true;
         private static bool option_show_title = true;
         private static bool clear_allowed = true;
+        private static ConsoleColor menu_item_background_color = ConsoleColor.Green;
+        private static ConsoleColor default_menu_background_color = ConsoleColor.Black;
+        private static ConsoleColor default_menu_foreground_color = ConsoleColor.Yellow;
         public static byte master_volume { private set; get; } = 100;
 
 
@@ -117,7 +120,8 @@ namespace test2
             while (true)//Loops game back to main menu
             {
 
-                game_mode = Title_Screen();
+                Title_Screen();
+                game_mode = Main_Menu();
 
 
                 if (game_mode == 1)
@@ -599,7 +603,7 @@ namespace test2
             clear_and_print_header();
         }
 
-        static byte Title_Screen()
+        static void Title_Screen()
         {
             if (first_run)
             {
@@ -662,89 +666,8 @@ namespace test2
                 }
 
             }
-            Console.BackgroundColor = ConsoleColor.Black;
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            string[] Options_Menu_label_active_setting;
-            while (true)
-            {
-                switch (Menu(Main_Menu_label, '>'))
-                {
-                    case 1:
-                        game_mode = 1;
-                        break;
-                    case 2:
-                        game_mode = 2;
-                        break;
-                    case 3:
-                        byte menu_return = 1;
-                        while (true)
-                        {
-                            Options_Menu_label_active_setting = Options_Menu_label.ToArray();
-                            Options_Menu_label_active_setting[0] += $" ({option_sound_on})";
-                            Options_Menu_label_active_setting[1] += $" ({master_volume})";
-                            Options_Menu_label_active_setting[2] += $" ({option_show_title})";
-                            Options_Menu_label_active_setting[3] += $" ({taunt_likley}%)";
-                            Options_Menu_label_active_setting[4] += $" ({clear_allowed})";
-                            menu_return = Menu(Options_Menu_label_active_setting, '>', menu_return);
-                            switch (menu_return)
-                            {
-                                case 1:
-                                    option_sound_on = !option_sound_on;
-                                    if (option_sound_on)
-                                    {
-
-                                        SoundEngine.Sound.Play("Sweet");
-                                    }
-                                    continue;
-                                case 2:
-                                    if (master_volume == 0) option_sound_on = true;
-
-                                    if (master_volume >= 90)
-                                    {
-                                        master_volume = 0;
-                                        option_sound_on = false;
-                                    }
-                                    else
-                                        master_volume += 10;
-                                    continue;
-                                case 3:
-                                    option_show_title = !option_show_title;
-                                    continue;
-                                case 4:
-                                    if (taunt_likley > 95)
-                                    {
-                                        taunt_likley = 0;
-                                    }
-                                    else
-                                    {
-                                        taunt_likley += 5;
-                                    }
-                                    continue;
-                                case 5:
-                                    clear_allowed = !clear_allowed;
-                                    continue;
-                                default:
-                                    break;
-                            }
-                            break;
-                        }
-                        continue;
-                    case 4:
-                        Console.Clear();
-                        print_ascii(exit_logo);
-                        SoundEngine.Sound.Play("Bye");
-                        Thread.Sleep(4000);
-                        //Delete file clean up should go here
-                        Environment.Exit(0);
-                        break;
-                    default:
-                        continue;
-                }
-                break;
-            }
-            clear_and_print_header();
-            return game_mode;
         }
+
         static bool SkipTitleSleep(byte multiplier, byte ms)
         {
             for (int i = 0; i <= multiplier; i++)
@@ -764,8 +687,9 @@ namespace test2
                 Console.ReadKey(true);
             }
         }
-        static byte Menu(string[] menu_label, char menu_bullet, byte retain_pos = 1)
+        static byte Menu(string[] menu_label, char menu_bullet, byte retain_pos = 1, ConsoleColor select_color = ConsoleColor.Green)
         {
+            ConsoleColor console_color_premenu_state = Console.BackgroundColor;
             bool scrolled = false;
             clear_and_print_header();
 
@@ -777,10 +701,14 @@ namespace test2
             //Pre-print Menu
             for (byte i = 0; i < menu_label.Length; i++)
             {
-                if (i == menu_selector_pos - 1) Console.BackgroundColor = ConsoleColor.Green;
-
-                Console.WriteLine($"{menu_bullet}   {menu_label[i]}");
-                if (i == menu_selector_pos - 1) Console.BackgroundColor = ConsoleColor.Black;
+                if (i == menu_selector_pos - 1)
+                {
+                    Console.BackgroundColor = select_color;
+                    Console.WriteLine($"  {menu_bullet} {menu_label[i]}");
+                }
+                else
+                    Console.WriteLine($"    {menu_label[i]}");
+                if (i == menu_selector_pos - 1) Console.BackgroundColor = console_color_premenu_state;
             }
 
             while (menu_select == 0)
@@ -830,12 +758,13 @@ namespace test2
                         {
                             if (i == menu_selector_pos - 1)
                             {
-                                Console.BackgroundColor = ConsoleColor.Green;
-
+                                Console.BackgroundColor = select_color;
+                                Console.WriteLine($"  {menu_bullet} {menu_label[i]}");
                             }
+                            else
 
-                            Console.WriteLine($"{menu_bullet}   {menu_label[i]}");
-                            Console.BackgroundColor = ConsoleColor.Black;
+                                Console.WriteLine($"    {menu_label[i]}");
+                            Console.BackgroundColor = console_color_premenu_state;
                         }
                         Thread.Sleep(100);
                         scrolled = false;
@@ -855,6 +784,99 @@ namespace test2
 
             return menu_select;
         }
+        private static void Menu_Options(byte menu_return)
+        {
+            string[] Options_Menu_label_active_setting;
+            while (true)
+            {
+                Options_Menu_label_active_setting = Options_Menu_label.ToArray();
+                Options_Menu_label_active_setting[0] += $" ({option_sound_on})";
+                Options_Menu_label_active_setting[1] += $" ({master_volume})";
+                Options_Menu_label_active_setting[2] += $" ({option_show_title})";
+                Options_Menu_label_active_setting[3] += $" ({taunt_likley}%)";
+                Options_Menu_label_active_setting[4] += $" ({clear_allowed})";
+                menu_return = Menu(Options_Menu_label_active_setting, '>', menu_return);
+                switch (menu_return)
+                {
+                    case 1:
+                        option_sound_on = !option_sound_on;
+                        if (option_sound_on)
+                        {
+
+                            SoundEngine.Sound.Play("Sweet");
+                        }
+                        continue;
+                    case 2:
+                        if (master_volume == 0) option_sound_on = true;
+
+                        if (master_volume >= 90)
+                        {
+                            master_volume = 0;
+                            option_sound_on = false;
+                        }
+                        else
+                            master_volume += 10;
+                        continue;
+                    case 3:
+                        option_show_title = !option_show_title;
+                        continue;
+                    case 4:
+                        if (taunt_likley > 95)
+                        {
+                            taunt_likley = 0;
+                        }
+                        else
+                        {
+                            taunt_likley += 5;
+                        }
+                        continue;
+                    case 5:
+                        clear_allowed = !clear_allowed;
+                        continue;
+                    default:
+                        break;
+                }
+                break;
+            }
+        }
+        private static byte Main_Menu()
+        {
+            //May want to make Menu a class
+            Console.BackgroundColor = default_menu_background_color;
+            Console.ForegroundColor = default_menu_foreground_color;
+
+            while (true)
+            {
+                switch (Menu(Main_Menu_label, '>', 1, menu_item_background_color))
+                {
+                    case 1:
+                        game_mode = 1;
+                        break;
+                    case 2:
+                        game_mode = 2;
+                        break;
+                    case 3:
+                        //This might be useless cant think at the moment to fix it
+                        byte menu_return = 1;
+                        Menu_Options(menu_return);
+                        continue;
+                    case 4:
+                        Console.Clear();
+                        print_ascii(exit_logo);
+                        SoundEngine.Sound.Play("Bye");
+                        Thread.Sleep(4000);
+                        //Delete file clean up should go here
+                        Environment.Exit(0);
+                        break;
+                    default:
+                        continue;
+                }
+                break;
+            }
+            clear_and_print_header();
+            return game_mode;
+        }
+
         static void print_ascii(string ascii_string)
         {
 
