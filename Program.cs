@@ -1,181 +1,39 @@
-﻿using NAudio.Wave;
+using NAudio.Wave;
 using NAudio.Wave.SampleProviders;
+using System.Runtime.InteropServices;
 using System.Text;
-
 namespace test2
 {
     internal class Program
     {
 
         //DATA STORAGE for ANSI and Other Files
-        private static string logo =
-            @"╔╗╔┬ ┬┌┬┐┌┐ ┌─┐┬─┐  ╔═╗┬ ┬┌─┐┌─┐┌─┐┌─┐┬─┐
-║║║│ ││││├┴┐├┤ ├┬┘  ║ ╦│ │├┤ └─┐└─┐├┤ ├┬┘
-╝╚╝└─┘┴ ┴└─┘└─┘┴└─  ╚═╝└─┘└─┘└─┘└─┘└─┘┴└─";
-        private static string exit_logo = @"                                                           
-                            ██████████████████████         
-                          ██████████████████████████░      
-                         ███████████░ ░█████████████       
-                         █████████▒ ░░░    ░█  ░█████      
-     █▒▒   █▒█           █████████░░░░░░░░░░░░░░   ██      
-      █▒▒  ▒▒█            ████████░░░▒▒▒▒▒▒░░░░▒▒▒   █     
-  ▓▒░  ▒▒▒▒▒▒░             ▒ ░████░░▒▒    ▓▒░▒▒▓░░▒▒       
-  ▓▒▒▒▒▒░░░░▒█  █          ▒░█░████░█  █   ░░▒     ░       
-     █▒░░░░░░▒▒▒▓          █▒▒░░░░░░▒  ░   ▒░▒▓ █  ▒       
-      █▒░░▓░░▒               █▒▒░░░░▒▒▒░░▒▒▒░░▒▒▒▒▓        
-       ▒▒▒▒▒▒▒██               █░░░█▒░░▒▒░░▒░░▒░░░         
-      █▓▒▒▒▓▓                  █░░░░░▒░░░█▓▒░░░██▓         
-     ▓          █░             ▓▒░░░░       ░▒█            
-     █      ░▓              ▓█ ▒▒▒░░░█████████             
-      ▓█░░             ░  █  ▓  ░█▒▒░ ████████             
-       ░           █         ▓     ▓▒▒▒▒▒█▒█▓   ░          
-        █                   ▒ ░█   █     ░ ░ █   ░         
-         █                  █    █  ▓   ██  ░▓   ▒█        
-          █                 ▓    █    █░  ░██ ░            
-            ▓█             ▓    █      ▒   ▓ █ ▓   ░▒      
-               ▓▓▒       █▒       ▒     █  ░░░ ▒           
-                                   ▓     ▓  █ ▒      ░     
-                                     █      ░ ░░█   █      
-                                      █    █▒  ▒   ██░     
-                                           ░ █     ▓       
-                      ░                 █   ██  █  █ █ ▒   
-                      ▒                      ▒  ░█   ▓ █";
-        private static String[,] AvatarASNI = {
-            {
-             "George", @"
-⠀⠀⠀⠀⠀⠀ ⠀⠀⠀⢀⣠⢔⣪⣿⣿⣷⣖⣲⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⣠⠖⠉⣋⡽⣿⠟⢫⣵⣾⣿⡥⠤⠼⢷⡦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⡠⠊⠁⠀⠞⠉⠀⢡⣶⠟⡿⠛⠓⢐⣩⣽⣿⣿⣿⣷⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⡜⠁⠀⠀⠀⠀⠀⡰⠋⣡⠞⠁⢐⣶⡭⣗⣲⠶⠶⠶⠶⠦⠽⢆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⢀⣾⣄⠀⠀⠀⠀⠀⠀⠁⠀⠁⠀⡤⠚⠁⠟⠁⠀⠀⠀⠀⠀⠀⠀⠈⢣⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⢸⣿⣿⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⢸⣿⣿⣿⣿⣦⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⢰⣾⣿⡿⢿⣿⣿⣿⣿⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⣾⣿⣿⢁⠀⡃⢿⣿⣿⣿⠃⠀⠀⠀⠀⢀⣀⣤⣀⡄⠀⠀⠀⠀⣠⣤⣤⣤⣸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⢀⣰⣿⣿⣿⣿⣬⠟⠁⣸⣿⣿⠋⠉⠑⠲⠤⣀⣈⡿⠿⠿⢷⡒⠒⠒⠒⡞⠋⠓⢻⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠛⣏⠉⠛⠛⠿⢿⠛⠈⠉⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⢸⡐⠀⢀⠐⡑⠒⠒⠺⡄⢊⠀⠀⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠸⡄⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠉⠐⠓⠒⠁⡤⠤⠤⣌⠁⠈⢻⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⢇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠇⠆⠰⠘⠀⠀⠘⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠘⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡤⠒⠐⡂⠤⣄⠀⠀⢹⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠹⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡟⣃⠀⢀⡇⢀⡿⢷⠀⢸⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠘⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣄⠉⠉⠉⠁⢀⡎⠀⢨⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠈⢣⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁⠂⠊⠁⠀⣠⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠙⢄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡄⠀⣠⡎⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠉⠓⠢⢤⣀⠀⠀⠀⠉⠒⠢⠤⠤⠤⠤⣤⡤⠖⠒⠋⠉⠀⠉⠲⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
-⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠁⠒⠒⠒⠒⠒⠂⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠈⢣⡀", "George Costanza is the king of bad decisions, panic, and survival mind set. He overthinks everything, avoids responsibility like a like his life depends on it, and still believes the universe owes big time."},
-            { "Cute Duck",@"
 
-     
-        ⡿⢋⣩⣭⣶⣶⣮⣭⡙⠿⣿
-     ⣿⠿⣋⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡙⢿
-    ⣿⡃⠄⠹⡿⣿⣿⣿⣿⠟⠛⣿⣿⣿⣿⣷⡌⢿
-    ⣿⠐⣠⡶⣶⣲⡎⢻⣿⣤⣴⣾⣿⣿⣿⣿⣿⠸⣿
- ⠟⣋⡥⡶⣞⡯⣟⣾⣺⢽⡧⣥⣭⣉⢻⣿⣿⣿⣿⣿⣆⢻⣿
-⡃⣾⢯⢿⢽⣫⡯⣷⣳⢯⡯⠯⠷⠻⠞⣼⣿⣿⣿⣿⣿⣿⡌⣿
-⣦⣍⡙⠫⠛⠕⣋⡓⠭⣡⢶⠗⣡⣶⡝⣿⣿⣿⣿⣿⣿⣿⣧⢹
-    ⣿⣘⣛⣋⣡⣵   ⣿⢸⣿⣿⣿⣿⣿⣿⣿⢸⢸
-              ⣿⢸⣿⣿⣿⣿⣿⣿⣿⢸
-              ⣿⢸⣿⣿⣿⣿⣿⣿⣿⢸
-","Ducky loves to take long walks on the beach and chase people! His favourite food is Dorito chips!"},
-
-            { "Silly Cat",
-@"  ,-.       _,---._ __  / \
- /  )    .-'       `./ /   \
-(  (   ,'            `/    /|
- \  `-""             \'\   / |
-  `.              ,  \ \ /  |
-   /`.          ,'-`----Y   |
-  (            ;        |   '
-  |  ,-.    ,-'         |  /
-  |  | (   |            | /
-  )  |  \  `.___________|/
-  `--'   `--'
-","This fiesty little bundle of joy is equipt with razor sharp knives. In his pass time he loves climbing his owners curtains!"},
-
-            { "Brian",
-@"╭━┳━╭━╭━╮╮
-┃┈┈┈┣▅╋▅┫┃
-┃┈┃┈╰━╰━━━━━━╮
-╰┳╯┈┈┈┈┈┈┈┈┈◢▉◣
- ┃┈┈┈┈┈┈┈┈┈┈▉▉▉
- ┃┈┈┈┈┈┈┈┈┈┈◥▉◤
- ┃┈┈┈┈╭━┳━━━━╯
- ┣━━━━━━┫
-","Brian Griffin is a martini-sipping, two-legged dog who fancies himself a deep thinker and aspiring writer, usually mid-lecture about life’s meaning."},
-
-            { "Bob the Seagull",
-@"     ▄▀▀▀▄
-▄███▀░◐░░░▌
-    ▌░░░░░▐
-    ▐░░░░░▐
-    ▌░░░░░▐▄▄
-    ▌░░░░▄▀▒▒▀▀▀▀▄
-   ▐░░░░▐▒▒▒▒▒▒▒▒▀▀▄
-   ▐░░░░▐▄▒▒▒▒▒▒▒▒▒▒▀▄
-    ▀▄░░░░▀▄▒▒▒▒▒▒▒▒▒▒▀▄
-    ▀▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▀▄
-           ▌▌ ▌▌
-           ▌▌ ▌▌
-         ▄▄▌▌▄▌▌
-","Not much is known about Bob, except if you have any fries, he will be there! He also can be pretty selfish."},
-
-            { "Silly Rabit",
-@" ▓▓▓▓
-  ▓▓......▓
-  ▓▓......▓▓                  ▓▓▓▓
-  ▓▓......▓▓              ▓▓......▓▓▓▓
-  ▓▓....▓▓              ▓......▓▓......▓▓
-    ▓▓....▓            ▓....▓▓    ▓▓▓....▓▓
-      ▓▓....▓        ▓....▓▓          ▓▓....▓
-        ▓▓..▓▓    ▓▓..▓▓                ▓▓
-        ▓▓......▓▓....▓▓
-       ▓......................▓
-     ▓.........................▓  
-    ▓......^..........^......▓ 
-    ▓............❤............▓  
-    ▓..........................▓  
-      ▓..........ٮ..........▓
-          ▓▓........▓▓
-", "Cute rabit, move along, nothing to see here, defenitly not trying to take your box of trix cereal."},
-
-
-
-            { "Curtis E Bear",
-@" ∧__∧　
-( ｀Д´ ）　　
-(っ▄︻▇〓┳═~~~~~~🌟
-/　 　 )
-( /￣∪
-", "He told me I better not say anything..."},
-
-            { "Big Fella",
-
-@"─────▀▄▀─────▄─────▄
-──▄███████▄──▀██▄██▀
-▄█████▀█████▄──▄█
-███████▀████████▀
-─▄▄▄▄▄▄███████▀
-","Whale! The only other fish/people who speeks his language is Dory (And my 6 year old)! He's pretty big, and he doesn't like taking baths."},
-
-            { "Clancy",
-@"  ⡤⣂⣭⣭⣅⠢⡀⠤⢀⣀⣀⠂⠾⡿⠛⢿⣦⢡
-⠀⠀⡌⢰⡿⠉⠉⠙⣡⣶⣿⣿⣿⣿⣿⣷⣦⡀⣸⡿⠸
-⠀⠀⢃⠸⣿⡤⢀⣾⣿⡿⠛⣿⣿⣿⣿⠛⢻⣿⣄⢶⠁
-⠀⠀⠀⠁⢒⢠⣿⣿⣿⣇⣀⢟⡛⠛⠛⡠⢼⣿⣿⡄⡆
-⠀⠀⠀⠀⠸⢸⣿⣿⣿⣿⢱⡿⣷⡦⢴⠇⡇⣿⣿⠃⠇
-⠀⠀⠀⠀⠀⠣⢙⠻⢿⣿⣧⣝⣲⠾⢗⣫⠼⢛⠅⠉⠀
-⠀⠀⠀⠀⠀⡀⠤⣃⡒⣬⣭⣭⣭⡭⠭⢴⣦⠑⠠⣀⠀⠀⠀⠀⠀⠀
-⠀⠀⢀⠄⣪⣴⣿⣿⡷⢸⣿⡟⣵⣾⣿⣷⣮⢣⢻⣶⣭⠒⣂⣔⢂⠀
-⢀⢊⣴⣾⣿⣿⣿⣿⠇⡿⠟⣃⡛⠿⣿⣿⣿⡏⡆⢿⡟⢸⣿⡤⠆⡄
-⢨⠨⡀⠀⠉⢿⣿⠟⡌⡴⢙⡀⣏⠙⡌⣿⣿⣿⢸⠈⣤⢸⣿⡇⠀⡇
-⠀⠑⠬⠑⣒⠪⢄⠺⡇⣿⠉⠀⠀⠉⡇⡿⠿⣣⢏⣼⣿⣿⣿⣧⠀⡇
-⠀⠀⠀⠀⠀⠀⠀⠁⠢⠙⣄⠀⠀⢠⢃⡛⠩⠀⠈⠩⠭⠭⠭⠍⠑⠁
-","This is Clancy, he keeps company to an elderly lady. He prefers it to be quite, doesnt like being dropped on the floor either. He is very important."}
-    };
         /*
         Consider files clean up
             AppDomain.CurrentDomain.ProcessExit += (_, __) => Cleanup();
         Console.CancelKeyPress += (_, __) => Cleanup();*/
+
+        //system variables
+        const int STD_OUTPUT_HANDLE = -11;
+        const int ENABLE_VIRTUAL_TERMINAL_PROCESSING = 0x0004;
+        public const int ConsoleColorDefault = 15;
+        public static readonly byte[] AnsiColorDefault = { 255, 255, 255 };
+
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetStdHandle(int nStdHandle);
+
+        [DllImport("kernel32.dll")]
+        static extern bool GetConsoleMode(IntPtr hConsoleHandle, out int lpMode);
+
+        [DllImport("kernel32.dll")]
+        static extern bool SetConsoleMode(IntPtr hConsoleHandle, int dwMode);
+
+        static bool EnableAnsi()
+        {
+            var handle = GetStdHandle(STD_OUTPUT_HANDLE);
+            return GetConsoleMode(handle, out int mode) && SetConsoleMode(handle, mode | ENABLE_VIRTUAL_TERMINAL_PROCESSING);
+        }
 
         //System Options
         private static string[] Main_Menu_label = { "Single Player", "Multi Player", "Options", "Quit" };
@@ -222,28 +80,24 @@ namespace test2
         //Colorcodes for Hex
         private static Dictionary<string, string> colors = new()
         {
-            { "white",                  "#FFFFFF" },
-            { "red",                    "#FF0000" },
-            { "green",                  "#008000" },
-            { "yellow",                 "#FFFF00" },
-            { "cyan",                   "#00FFFF" },
-            { "lightgoldenrodyellow",   "#fafad2" },
-            { "teal",                   "#008080" },
+            { "white",                  "#FFFFFF15"},
+            { "red",                    "#FF000012" },
+            { "green",                  "#00800010" },
+            { "yellow",                 "#FFFF0006" },
+            { "cyan",                   "#00FFFF11" },
+            { "lightgoldenrodyellow",   "#fafad214" },
+            { "teal",                   "#00808003" },
 
         };
 
 
 
-        //bASE64 wave files in raw text
 
-
-        //Check variables
-
-
-        //Main Variables
         private static byte game_mode;
+        public static bool ansiOk { private set; get; }
         static void Main(string[] args)
         {
+            ansiOk = EnableAnsi();
 
             Console.BackgroundColor = ConsoleColor.Cyan;
             Console.CursorVisible = false;
@@ -298,15 +152,15 @@ namespace test2
 
                 if (game_mode == 1)
                 {
-                    Console.WriteLine(TextColorize("cyan", "Welcome to the Single Player Guessing game!"));
-                    Console.WriteLine(TextColorize("white", "You can choose to play on 5 different levels."));
-                    Console.WriteLine(TextColorize("red", "\tBut beware, this computer opponent may not always be helpful as the difficulty increases!! 😱 Muwaha!"));
+                    TextColorize(("cyan", "Welcome to the Single Player Guessing game!", false));
+                    TextColorize(("white", "You can choose to play on 5 different levels.", false));
+                    TextColorize(("red", "\tBut beware, this computer opponent may not always be helpful as the difficulty increases!! 😱 Muwaha!", false));
                 }
                 else
                 {
-                    Console.WriteLine(TextColorize("Cyan", "Welcome to the Multiplayer Guessing game!"));
+                    TextColorize(("Cyan", "Welcome to the Multiplayer Guessing game!", false));
                     Thread.Sleep(100);
-                    Console.WriteLine(TextColorize("Red", "Beware your opponent can see your guesses too!"));
+                    TextColorize(("Red", "Beware your opponent can see your guesses too!", false));
                     Thread.Sleep(100);
                     Console.WriteLine("Lets Start with collecting information for Player 1 (Player number is arbitrary)\nPress any key to continue.");
                     Console.ReadKey();
@@ -317,12 +171,15 @@ namespace test2
                     SoundEngine.soundLibrary["Multi Intro"].Play();
                     Console.WriteLine($"This is the battle of the ages, >>> {player_name[0]} VS {player_name[1]}!");
                     Thread.Sleep(3000);
-                    Console.WriteLine(TextColorize("Red", "There can only be one winner!"));
+                    TextColorize(("Red", "There can only be one winner!", false));
                     Thread.Sleep(3000);
-                    Console.WriteLine(TextColorize("Yellow", "The Rules: "));
+                    TextColorize(("Yellow", "The Rules: ", false));
                     Thread.Sleep(2000);
-                    Console.WriteLine("A weakist warrior is chosen to go first, each of you will take turns guessing a random number of how many " +
-                        TextColorize("Red", "dragons") + " I have slayed!");
+                    TextColorize(
+                         (null, "A weakist warrior is chosen to go first, each of you will take turns guessing a random number of how many ", false),
+                        ("Red", "dragons", false),
+                        (null, " I have slayed!", false)
+                        );
                     Thread.Sleep(5000);
 
                 }
@@ -331,7 +188,7 @@ namespace test2
                 {
                     while (true)
                     {
-                        Console.Write(TextColorize("White", "Enter a number between 1 and 5 to choose your level: "));
+                        TextColorize(("White", "Enter a number between 1 and 5 to choose your level: ", true));
 
                         try
                         {
@@ -539,7 +396,7 @@ namespace test2
                         SoundEngine.soundLibrary["Applause"].Play();
                     }
 
-                    Console.WriteLine(TextColorize("green", "Would you like to play again? (Press: (Y) Yess OR (AnyOther Key) Menu)"));
+                    TextColorize(("green", "Would you like to play again? (Press: (Y) Yess OR (AnyOther Key) Menu)", false));
                     FlushConsoleBuffer();
                     ConsoleKeyInfo play_again = Console.ReadKey(true);
                     if (play_again.Key == ConsoleKey.Y)
@@ -561,7 +418,7 @@ namespace test2
         static void HintSystem(short current_guess, short target_number, byte type, byte random_event)
         {
             if (game_mode == 1)
-                Console.Write(TextColorize("Red", $"You guessed: {current_guess}, "));
+                TextColorize(("Red", $"You guessed: {current_guess}, ", true));
             else
                 Console.Write($"Previous player guessed: {current_guess}, ");
 
@@ -636,7 +493,8 @@ namespace test2
         }
         static void Begin()
         {
-            Console.WriteLine("\n" + TextColorize("yellow", "██████████████████████████████████████\n████████ LET THE GAMES BEGIN! ████████\n██████████████████████████████████████\n"));
+
+            TextColorize(("yellow", "\n██████████████████████████████████████\n████████ LET THE GAMES BEGIN! ████████\n██████████████████████████████████████\n", false));
             SoundEngine.soundLibrary["Begin"].Play();
             Thread.Sleep(2000);
             FlushConsoleBuffer();
@@ -694,9 +552,9 @@ namespace test2
                 else
                 {
                     clear_and_print_header(new string[] { $", {player_name[player]} (Player {player + 1})" });
-                    Console.WriteLine(TextColorize("yellow", player_name[player] + $" (Player {player + 1}) Choose your Avatar (Left/Right), Select (Enter), PlaySound(Space)"));
-                    Console.WriteLine(TextColorize("green", "Name:") + AvatarASNI[i, 0]);
-                    Console.WriteLine(TextColorize("green", "Description:") + AvatarASNI[i, 2]);
+                    TextColorize(("yellow", player_name[player] + $" (Player {player + 1}) Choose your Avatar (Left/Right), Select (Enter), PlaySound(Space)", false));
+                    TextColorize(("green", $"Name: {AvatarASNI[i, 0]}", false));
+                    TextColorize(("green", $"Description: {AvatarASNI[i, 2]}", false));
                     print_ascii(AvatarASNI[i, 1]);
                     break;
                 }
@@ -752,9 +610,9 @@ namespace test2
                 }
 
                 clear_and_print_header(new string[] { $", {player_name[player]} (Player {player + 1})" });
-                Console.WriteLine(TextColorize("yellow", player_name[player] + $" (Player {player + 1}) Choose your Avatar (Left/Right), Select (Enter), PlaySound(Space)"));
-                Console.WriteLine(TextColorize("green", "Name:") + AvatarASNI[i, 0]);
-                Console.WriteLine(TextColorize("green", "Description:") + AvatarASNI[i, 2]);
+                TextColorize(("yellow", $"{player_name[player]} (Player {player + 1}) Choose your Avatar (Left/Right), Select (Enter), PlaySound(Space)", false));
+                TextColorize(("green", $"Name: {AvatarASNI[i, 0]}", false));
+                TextColorize(("green", $"Description: {AvatarASNI[i, 2]}", false));
                 print_ascii(AvatarASNI[i, 1]);
             }
             clear_and_print_header(new string[] { $", {player_name[player]} (Player {player + 1}: {AvatarASNI[player_avatar[player], 0]})" });
@@ -783,7 +641,7 @@ namespace test2
                     if (i > 1)
                     {
                         Console.BackgroundColor = ConsoleColor.Black;
-                        Console.WriteLine(TextColorize("teal", "\t\t    Written By Eric Beaudoin!    "));
+                        TextColorize(("teal", "\t\t    Written By Eric Beaudoin!    ", false));
                         delay = 50;
                         newline -= 1;
                     }
@@ -795,7 +653,7 @@ namespace test2
                     }
                     if (i > 3)
                     {
-                        Console.WriteLine(TextColorize("lightgoldenrodyellow", "\n\t\t    Welcome To Everyones Favourite Game!    "));
+                        TextColorize(("lightgoldenrodyellow", "\n\t\t    Welcome To Everyones Favourite Game!    ", false));
                         newline -= 2;
                         delay = 20;
                     }
@@ -1070,6 +928,7 @@ namespace test2
             }
             Console.WriteLine("");
             Console.ResetColor();
+            Console.ForegroundColor = (ConsoleColor)ConsoleColorDefault;
         }
 
         static void clear_and_print_header(string[]? additional_prints = null)
@@ -1106,23 +965,48 @@ namespace test2
             Console.Write("\u001b[38;2;255;255;255m\n");
         }
 
-        static string TextColorize(string color, string text)
+        static void TextColorize(params (string? Color, string text, bool write)[] parts)
         {
-            string hex;
-            if (!string.IsNullOrEmpty(colors[color.ToLower()]))
+
+            foreach (var param in parts)
             {
-                hex = colors[color.ToLower()].TrimStart('#');
+                if (colors?.TryGetValue(param.Color.ToString().ToLower(), out var hex) != true
+    || string.IsNullOrWhiteSpace(hex))
+                {
+                    Console.Write(param.text);
+                }
+                else
+                {
+                    hex = hex.TrimStart('#');
+
+                    if (ansiOk)
+                    {
+                        int r = Convert.ToInt32(hex.Substring(0, 2), 16);
+                        int g = Convert.ToInt32(hex.Substring(2, 2), 16);
+                        int b = Convert.ToInt32(hex.Substring(3, 2), 16);
+
+
+                        Console.Write($"\u001b[38;2;{r};{g};{b}m{param.text}\x1b\u001b[38;2;{AnsiColorDefault[0]};{AnsiColorDefault[1]};{AnsiColorDefault[2]}m");
+                    }
+                    else
+                    {
+                        int c = Convert.ToInt32(hex.Substring(5, 2), 8);
+                        Console.ForegroundColor = (ConsoleColor)c;
+                        Console.Write(param.text);
+                        Console.ForegroundColor = (ConsoleColor)ConsoleColorDefault;
+                    }
+                }
+
+                if (!param.write)
+                {
+                    Console.WriteLine();
+                }
+
+
+
             }
-            else
-                return text;
 
-            int r = Convert.ToInt32(hex.Substring(0, 2), 16);
-            int g = Convert.ToInt32(hex.Substring(2, 2), 16);
-            int b = Convert.ToInt32(hex.Substring(3, 2), 16);
-            return $"\u001b[38;2;{r};{g};{b}m{text}\x1b\u001b[38;2;{255};{255};{255}m";
         }
-
-
         static bool IsPrime(int n)
         {
             if (n <= 1) return false;
@@ -1138,7 +1022,170 @@ namespace test2
             return true;
         }
 
+        private static string logo =
+                    @"╔╗╔┬ ┬┌┬┐┌┐ ┌─┐┬─┐  ╔═╗┬ ┬┌─┐┌─┐┌─┐┌─┐┬─┐
+║║║│ ││││├┴┐├┤ ├┬┘  ║ ╦│ │├┤ └─┐└─┐├┤ ├┬┘
+╝╚╝└─┘┴ ┴└─┘└─┘┴└─  ╚═╝└─┘└─┘└─┘└─┘└─┘┴└─";
+        private static string exit_logo = @"                                                           
+                            ██████████████████████         
+                          ██████████████████████████░      
+                         ███████████░ ░█████████████       
+                         █████████▒ ░░░    ░█  ░█████      
+     █▒▒   █▒█           █████████░░░░░░░░░░░░░░   ██      
+      █▒▒  ▒▒█            ████████░░░▒▒▒▒▒▒░░░░▒▒▒   █     
+  ▓▒░  ▒▒▒▒▒▒░             ▒ ░████░░▒▒    ▓▒░▒▒▓░░▒▒       
+  ▓▒▒▒▒▒░░░░▒█  █          ▒░█░████░█  █   ░░▒     ░       
+     █▒░░░░░░▒▒▒▓          █▒▒░░░░░░▒  ░   ▒░▒▓ █  ▒       
+      █▒░░▓░░▒               █▒▒░░░░▒▒▒░░▒▒▒░░▒▒▒▒▓        
+       ▒▒▒▒▒▒▒██               █░░░█▒░░▒▒░░▒░░▒░░░         
+      █▓▒▒▒▓▓                  █░░░░░▒░░░█▓▒░░░██▓         
+     ▓          █░             ▓▒░░░░       ░▒█            
+     █      ░▓              ▓█ ▒▒▒░░░█████████             
+      ▓█░░             ░  █  ▓  ░█▒▒░ ████████             
+       ░           █         ▓     ▓▒▒▒▒▒█▒█▓   ░          
+        █                   ▒ ░█   █     ░ ░ █   ░         
+         █                  █    █  ▓   ██  ░▓   ▒█        
+          █                 ▓    █    █░  ░██ ░            
+            ▓█             ▓    █      ▒   ▓ █ ▓   ░▒      
+               ▓▓▒       █▒       ▒     █  ░░░ ▒           
+                                   ▓     ▓  █ ▒      ░     
+                                     █      ░ ░░█   █      
+                                      █    █▒  ▒   ██░     
+                                           ░ █     ▓       
+                      ░                 █   ██  █  █ █ ▒   
+                      ▒                      ▒  ░█   ▓ █";
+        private static String[,] AvatarASNI = {
+            {
+             "George", @"
+⠀⠀⠀⠀⠀⠀ ⠀⠀⠀⢀⣠⢔⣪⣿⣿⣷⣖⣲⣦⣄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⣠⠖⠉⣋⡽⣿⠟⢫⣵⣾⣿⡥⠤⠼⢷⡦⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⡠⠊⠁⠀⠞⠉⠀⢡⣶⠟⡿⠛⠓⢐⣩⣽⣿⣿⣿⣷⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⡜⠁⠀⠀⠀⠀⠀⡰⠋⣡⠞⠁⢐⣶⡭⣗⣲⠶⠶⠶⠶⠦⠽⢆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⢀⣾⣄⠀⠀⠀⠀⠀⠀⠁⠀⠁⠀⡤⠚⠁⠟⠁⠀⠀⠀⠀⠀⠀⠀⠈⢣⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⢸⣿⣿⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⢸⣿⣿⣿⣿⣦⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢻⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⢰⣾⣿⡿⢿⣿⣿⣿⣿⣤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⣾⣿⣿⢁⠀⡃⢿⣿⣿⣿⠃⠀⠀⠀⠀⢀⣀⣤⣀⡄⠀⠀⠀⠀⣠⣤⣤⣤⣸⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⢀⣰⣿⣿⣿⣿⣬⠟⠁⣸⣿⣿⠋⠉⠑⠲⠤⣀⣈⡿⠿⠿⢷⡒⠒⠒⠒⡞⠋⠓⢻⡁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠛⣏⠉⠛⠛⠿⢿⠛⠈⠉⠀⣿⣿⡇⠀⠀⠀⠀⠀⠀⢸⡐⠀⢀⠐⡑⠒⠒⠺⡄⢊⠀⠀⣇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠸⡄⠀⠀⠀⠀⠀⠀⠀⠀⠉⠉⠀⠀⠀⠀⠀⠀⠀⠀⠉⠐⠓⠒⠁⡤⠤⠤⣌⠁⠈⢻⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⢇⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠇⠆⠰⠘⠀⠀⠘⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠘⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⡤⠒⠐⡂⠤⣄⠀⠀⢹⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠹⡄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠘⡟⣃⠀⢀⡇⢀⡿⢷⠀⢸⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠘⣆⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠙⣄⠉⠉⠉⠁⢀⡎⠀⢨⠃⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠈⢣⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠁⠂⠊⠁⠀⣠⠋⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠙⢄⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢠⡄⠀⣠⡎⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠉⠓⠢⢤⣀⠀⠀⠀⠉⠒⠢⠤⠤⠤⠤⣤⡤⠖⠒⠋⠉⠀⠉⠲⣄⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠈⠉⠉⠁⠒⠒⠒⠒⠒⠂⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀⠈⢣⡀", "George Costanza is the king of bad decisions, panic, and survival mind set. He overthinks everything, avoids responsibility like a like his life depends on it, and still believes the universe owes big time."},
+            { "Cute Duck",@"
 
+     
+        ⡿⢋⣩⣭⣶⣶⣮⣭⡙⠿⣿
+     ⣿⠿⣋⣴⣿⣿⣿⣿⣿⣿⣿⣿⣿⣦⡙⢿
+    ⣿⡃⠄⠹⡿⣿⣿⣿⣿⠟⠛⣿⣿⣿⣿⣷⡌⢿
+    ⣿⠐⣠⡶⣶⣲⡎⢻⣿⣤⣴⣾⣿⣿⣿⣿⣿⠸⣿
+ ⠟⣋⡥⡶⣞⡯⣟⣾⣺⢽⡧⣥⣭⣉⢻⣿⣿⣿⣿⣿⣆⢻⣿
+⡃⣾⢯⢿⢽⣫⡯⣷⣳⢯⡯⠯⠷⠻⠞⣼⣿⣿⣿⣿⣿⣿⡌⣿
+⣦⣍⡙⠫⠛⠕⣋⡓⠭⣡⢶⠗⣡⣶⡝⣿⣿⣿⣿⣿⣿⣿⣧⢹
+    ⣿⣘⣛⣋⣡⣵   ⣿⢸⣿⣿⣿⣿⣿⣿⣿⢸⢸
+              ⣿⢸⣿⣿⣿⣿⣿⣿⣿⢸
+              ⣿⢸⣿⣿⣿⣿⣿⣿⣿⢸
+","Ducky loves to take long walks on the beach and chase people! His favourite food is Dorito chips!"},
+
+            { "Silly Cat",
+@"  ,-.       _,---._ __  / \
+ /  )    .-'       `./ /   \
+(  (   ,'            `/    /|
+ \  `-""             \'\   / |
+  `.              ,  \ \ /  |
+   /`.          ,'-`----Y   |
+  (            ;        |   '
+  |  ,-.    ,-'         |  /
+  |  | (   |            | /
+  )  |  \  `.___________|/
+  `--'   `--'
+","This fiesty little bundle of joy is equipt with razor sharp knives. In his pass time he loves climbing his owners curtains!"},
+
+            { "Brian",
+@"╭━┳━╭━╭━╮╮
+┃┈┈┈┣▅╋▅┫┃
+┃┈┃┈╰━╰━━━━━━╮
+╰┳╯┈┈┈┈┈┈┈┈┈◢▉◣
+ ┃┈┈┈┈┈┈┈┈┈┈▉▉▉
+ ┃┈┈┈┈┈┈┈┈┈┈◥▉◤
+ ┃┈┈┈┈╭━┳━━━━╯
+ ┣━━━━━━┫
+","Brian Griffin is a martini-sipping, two-legged dog who fancies himself a deep thinker and aspiring writer, usually mid-lecture about life’s meaning."},
+
+            { "Bob the Seagull",
+@"     ▄▀▀▀▄
+▄███▀░◐░░░▌
+    ▌░░░░░▐
+    ▐░░░░░▐
+    ▌░░░░░▐▄▄
+    ▌░░░░▄▀▒▒▀▀▀▀▄
+   ▐░░░░▐▒▒▒▒▒▒▒▒▀▀▄
+   ▐░░░░▐▄▒▒▒▒▒▒▒▒▒▒▀▄
+    ▀▄░░░░▀▄▒▒▒▒▒▒▒▒▒▒▀▄
+    ▀▄▄▄▄▄█▄▄▄▄▄▄▄▄▄▄▄▀▄
+           ▌▌ ▌▌
+           ▌▌ ▌▌
+         ▄▄▌▌▄▌▌
+","Not much is known about Bob, except if you have any fries, he will be there! He also can be pretty selfish."},
+
+            { "Silly Rabit",
+@" ▓▓▓▓
+  ▓▓......▓
+  ▓▓......▓▓                  ▓▓▓▓
+  ▓▓......▓▓              ▓▓......▓▓▓▓
+  ▓▓....▓▓              ▓......▓▓......▓▓
+    ▓▓....▓            ▓....▓▓    ▓▓▓....▓▓
+      ▓▓....▓        ▓....▓▓          ▓▓....▓
+        ▓▓..▓▓    ▓▓..▓▓                ▓▓
+        ▓▓......▓▓....▓▓
+       ▓......................▓
+     ▓.........................▓  
+    ▓......^..........^......▓ 
+    ▓............❤............▓  
+    ▓..........................▓  
+      ▓..........ٮ..........▓
+          ▓▓........▓▓
+", "Cute rabit, move along, nothing to see here, defenitly not trying to take your box of trix cereal."},
+
+
+
+            { "Curtis E Bear",
+@" ∧__∧　
+( ｀Д´ ）　　
+(っ▄︻▇〓┳═~~~~~~🌟
+/　 　 )
+( /￣∪
+", "He told me I better not say anything..."},
+
+            { "Big Fella",
+
+@"─────▀▄▀─────▄─────▄
+──▄███████▄──▀██▄██▀
+▄█████▀█████▄──▄█
+███████▀████████▀
+─▄▄▄▄▄▄███████▀
+","Whale! The only other fish/people who speeks his language is Dory (And my 6 year old)! He's pretty big, and he doesn't like taking baths."},
+
+            { "Clancy",
+@"  ⡤⣂⣭⣭⣅⠢⡀⠤⢀⣀⣀⠂⠾⡿⠛⢿⣦⢡
+⠀⠀⡌⢰⡿⠉⠉⠙⣡⣶⣿⣿⣿⣿⣿⣷⣦⡀⣸⡿⠸
+⠀⠀⢃⠸⣿⡤⢀⣾⣿⡿⠛⣿⣿⣿⣿⠛⢻⣿⣄⢶⠁
+⠀⠀⠀⠁⢒⢠⣿⣿⣿⣇⣀⢟⡛⠛⠛⡠⢼⣿⣿⡄⡆
+⠀⠀⠀⠀⠸⢸⣿⣿⣿⣿⢱⡿⣷⡦⢴⠇⡇⣿⣿⠃⠇
+⠀⠀⠀⠀⠀⠣⢙⠻⢿⣿⣧⣝⣲⠾⢗⣫⠼⢛⠅⠉⠀
+⠀⠀⠀⠀⠀⡀⠤⣃⡒⣬⣭⣭⣭⡭⠭⢴⣦⠑⠠⣀⠀⠀⠀⠀⠀⠀
+⠀⠀⢀⠄⣪⣴⣿⣿⡷⢸⣿⡟⣵⣾⣿⣷⣮⢣⢻⣶⣭⠒⣂⣔⢂⠀
+⢀⢊⣴⣾⣿⣿⣿⣿⠇⡿⠟⣃⡛⠿⣿⣿⣿⡏⡆⢿⡟⢸⣿⡤⠆⡄
+⢨⠨⡀⠀⠉⢿⣿⠟⡌⡴⢙⡀⣏⠙⡌⣿⣿⣿⢸⠈⣤⢸⣿⡇⠀⡇
+⠀⠑⠬⠑⣒⠪⢄⠺⡇⣿⠉⠀⠀⠉⡇⡿⠿⣣⢏⣼⣿⣿⣿⣧⠀⡇
+⠀⠀⠀⠀⠀⠀⠀⠁⠢⠙⣄⠀⠀⢠⢃⡛⠩⠀⠈⠩⠭⠭⠭⠍⠑⠁
+","This is Clancy, he keeps company to an elderly lady. He prefers it to be quite, doesnt like being dropped on the floor either. He is very important."}
+    };
     }
 
     internal class SoundEngine
@@ -1408,4 +1455,5 @@ namespace test2
             }
         }
     }
+
 }
