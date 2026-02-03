@@ -17,9 +17,9 @@
 * Consider always printing one blank line above the header when header is printed for padding.
 
 ## Game Play
-* Keep track of wins and looses in multiplayer, so users can see how got the best.
+* Keep track of wins and looses in multiplayer, so users can see overtime who won more.
 * Increase to a higher level such as numbers up to 1000
-* Improve hint modes to provide more interesting moments
+* Improve hint modes to provide more interesting moments if levels explanded past 5.
 * consider removing liar mode based on user feedback
 * single Player give the user points, and allow them to unlock a special sound byte based on their points (maybe a dumb idea)
  
