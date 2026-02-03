@@ -1,5 +1,9 @@
 ## Required improvements ##
 
+## Language and messages
+*Provide language support by loading external documents, or embeded arrays with strings of each test that would be printed out (apart from variables ofcourse)
+*Laungauges have different syntax, so temportary variables need to mark the place. VAR1, VAR2 inside the string. Use literal text @"your name is {tmp_name}", use naming convetion that may not conflict with various scopes. prefex is a good idea.
+
 ## General
 * Name spaces into one for Audio Engine for reuse and one for the main program
 * Give version number to exe file and version number on the splash screen and in the Program Class comment to help link what is being run
