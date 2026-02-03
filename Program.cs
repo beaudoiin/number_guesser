@@ -98,6 +98,10 @@ namespace test2
         static void Main(string[] args)
         {
             ansiOk = EnableAnsi();
+            Console.WriteLine($"ansiOk: \x1b[31m{ansiOk}\x1b[0m");
+            Thread.Sleep(1000);
+            Console.WriteLine("\x1b[38;2;1;200;200mTRUE ANSI RGB\x1b[0m");
+            Thread.Sleep(2000);
 
             Console.BackgroundColor = ConsoleColor.Cyan;
             Console.CursorVisible = false;
@@ -164,11 +168,11 @@ namespace test2
                     Thread.Sleep(100);
                     Console.WriteLine("Lets Start with collecting information for Player 1 (Player number is arbitrary)\nPress any key to continue.");
                     Console.ReadKey();
-                    SoundEngine.soundLibrary["Select"].Play();
+                    SoundEngine.Sound.Play("Select");
                     SelectYourProfile(0);
                     SelectYourProfile(1);
 
-                    SoundEngine.soundLibrary["Multi Intro"].Play();
+                    SoundEngine.Sound.Play("Multi Intro");
                     Console.WriteLine($"This is the battle of the ages, >>> {player_name[0]} VS {player_name[1]}!");
                     Thread.Sleep(3000);
                     TextColorize(("Red", "There can only be one winner!", false));
@@ -194,7 +198,7 @@ namespace test2
                         {
                             Console.CursorVisible = true;
                             Level = Convert.ToByte(Console.ReadLine());
-                            SoundEngine.soundLibrary["Select"].Play();
+                            SoundEngine.Sound.Play("Select");
                             Console.CursorVisible = false;
                             if (Level < 1 || Level > 5)
                             {
@@ -239,7 +243,7 @@ namespace test2
                                     {
                                         Console.CursorVisible = true;
                                         players_guesses[0] = Convert.ToInt16(Console.ReadLine());
-                                        SoundEngine.soundLibrary["Select"].Play();
+                                        SoundEngine.Sound.Play("Select");
                                         Console.CursorVisible = false;
                                         if (players_guesses[0] > UpperRange - 1 || players_guesses[0] < 1)
                                         {
@@ -271,7 +275,7 @@ namespace test2
                                     if (player_sound_random_taunt < taunt_likley)
                                     {
                                         random_sound = (byte)new Random().Next(1, 9);
-                                        SoundEngine.soundLibrary["Wrong" + random_sound].Play();
+                                        SoundEngine.Sound.Play("Wrong" + random_sound);
 
 
 
@@ -292,9 +296,9 @@ namespace test2
                             Console.Write(player_name[0] + " This is going to be your roll");
                             Thread.Sleep(2000);
                             FlushConsoleBuffer();
-                            SoundEngine.soundLibrary["Dice"].Play();
+                            SoundEngine.Sound.Play("Dice");
                             player_rolls[0] = DiceRoll(0);
-                            SoundEngine.soundLibrary["Dice"].Play();
+                            SoundEngine.Sound.Play("Dice");
                             player_rolls[1] = DiceRoll(1);
 
                             if (player_rolls[0] > player_rolls[1])
@@ -312,14 +316,14 @@ namespace test2
                             {
                                 Console.WriteLine("There was no honor in that roll, you must redo it. (\"Press any key to continue.)");
                                 Console.ReadKey();
-                                SoundEngine.soundLibrary["Select"].Play();
+                                SoundEngine.Sound.Play("Select");
                                 continue;
                             }
                             break;
                         }
                         Console.WriteLine(" (Press any key to continue.)");
                         Console.ReadKey();
-                        SoundEngine.soundLibrary["Select"].Play();
+                        SoundEngine.Sound.Play("Select");
                         clear_and_print_header();
 
                         Begin();
@@ -336,7 +340,7 @@ namespace test2
                                 {
                                     Console.CursorVisible = true;
                                     players_guesses[current_player] = Convert.ToInt16(Console.ReadLine());
-                                    SoundEngine.soundLibrary["Select"].Play();
+                                    SoundEngine.Sound.Play("Select");
                                     Console.CursorVisible = false;
 
                                     if (players_guesses[current_player] > UpperRange - 1)
@@ -377,7 +381,7 @@ namespace test2
 
                     SoundEngine.StopAllSounds(100);
 
-                    SoundEngine.soundLibrary[players_win_status[current_player]].Play();
+                    SoundEngine.Sound.Play(players_win_status[current_player]);
 
 
                     Thread.Sleep(1000);
@@ -393,7 +397,7 @@ namespace test2
                         Console.WriteLine(player_name[current_player] + " you won!");
                         clear_and_print_header();
                         print_ascii(AvatarASNI[player_avatar[current_player], 1]);
-                        SoundEngine.soundLibrary["Applause"].Play();
+                        SoundEngine.Sound.Play("Applause");
                     }
 
                     TextColorize(("green", "Would you like to play again? (Press: (Y) Yess OR (AnyOther Key) Menu)", false));
@@ -401,7 +405,7 @@ namespace test2
                     ConsoleKeyInfo play_again = Console.ReadKey(true);
                     if (play_again.Key == ConsoleKey.Y)
                     {
-                        SoundEngine.soundLibrary["Select"].Play();
+                        SoundEngine.Sound.Play("Select");
                         clear_and_print_header();
                         continue;
                     }
@@ -491,13 +495,19 @@ namespace test2
             }
 
         }
-        static void Begin()
+        public static void Begin()
         {
 
             TextColorize(("yellow", "\n██████████████████████████████████████\n████████ LET THE GAMES BEGIN! ████████\n██████████████████████████████████████\n", false));
-            SoundEngine.soundLibrary["Begin"].Play();
+            SoundEngine.Sound.Play("Begin");
             Thread.Sleep(2000);
             FlushConsoleBuffer();
+        }
+        public static void WriteError(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.Error.WriteLine(message);
+            Console.ResetColor();
         }
         static byte DiceRoll(byte player)
         {
@@ -527,7 +537,7 @@ namespace test2
             Console.Write($"{player_name[player]} rolled a {final_roll}");
             Console.WriteLine(" (Press any key to continue)");
             Console.ReadKey(true);
-            SoundEngine.soundLibrary["Select"].Play();
+            SoundEngine.Sound.Play("Select");
             return final_roll;
         }
 
@@ -536,13 +546,13 @@ namespace test2
             clear_and_print_header();
             Console.Write("Player " + (player + 1));
             byte i = 0;
-            SoundEngine.soundLibrary["Waiting"].Play(setLoop: true);
+            SoundEngine.Sound.Play("Waiting", setLoop: true);
             while (true)
             {
                 Console.Write(" what is Your name?: ");
                 Console.CursorVisible = true;
                 player_name[player] = Convert.ToString(Console.ReadLine())!;
-                SoundEngine.soundLibrary["Select"].Play();
+                SoundEngine.Sound.Play("Select");
                 Console.CursorVisible = false;
                 if (player_name[player] == "")
                 {
@@ -552,7 +562,7 @@ namespace test2
                 else
                 {
                     clear_and_print_header(new string[] { $", {player_name[player]} (Player {player + 1})" });
-                    TextColorize(("yellow", player_name[player] + $" (Player {player + 1}) Choose your Avatar (Left/Right), Select (Enter), PlaySound(Space)", false));
+                    TextColorize(("yellow", player_name[player] + $" choose your Avatar (Left/Right), Select (Enter), Play Sound (Space)", false));
                     TextColorize(("green", $"Name: {AvatarASNI[i, 0]}", false));
                     TextColorize(("green", $"Description: {AvatarASNI[i, 2]}", false));
                     print_ascii(AvatarASNI[i, 1]);
@@ -565,7 +575,7 @@ namespace test2
                 ConsoleKeyInfo avatar_key = Console.ReadKey(true);
                 if (avatar_key.Key == ConsoleKey.RightArrow)
                 {
-                    SoundEngine.soundLibrary["Scroll"].Play();
+                    SoundEngine.Sound.Play("Scroll");
                     if (i < (AvatarASNI.Length / 3) - 1)
                         i++;
                     else
@@ -575,7 +585,7 @@ namespace test2
                 {
                     if (avatar_key.Key == ConsoleKey.LeftArrow)
                     {
-                        SoundEngine.soundLibrary["Scroll"].Play();
+                        SoundEngine.Sound.Play("Scroll");
                         if (i < 1)
                             i = (byte)((AvatarASNI.Length / 3) - 1);
                         else
@@ -588,8 +598,8 @@ namespace test2
                         {
                             player_avatar[player] = i;
                             SoundEngine.StopAllSounds(50);
-                            SoundEngine.soundLibrary["Select"].Play();
-                            SoundEngine.soundLibrary["Applause"].Play();
+                            SoundEngine.Sound.Play("Select");
+                            SoundEngine.Sound.Play("Applause");
                             break;
                         }
                     }
@@ -603,14 +613,14 @@ namespace test2
                                 e.Add(AvatarASNI[x, 0]);
                             }
                             SoundEngine.StopAllSounds(50, e);
-                            SoundEngine.soundLibrary[AvatarASNI[i, 0]].Play();
+                            SoundEngine.Sound.Play(AvatarASNI[i, 0]);
                         }
 
                     }
                 }
 
                 clear_and_print_header(new string[] { $", {player_name[player]} (Player {player + 1})" });
-                TextColorize(("yellow", $"{player_name[player]} (Player {player + 1}) Choose your Avatar (Left/Right), Select (Enter), PlaySound(Space)", false));
+                TextColorize(("yellow", $"{player_name[player]} choose your Avatar (Left/Right), Select (Enter), Play Sound (Space)", false));
                 TextColorize(("green", $"Name: {AvatarASNI[i, 0]}", false));
                 TextColorize(("green", $"Description: {AvatarASNI[i, 2]}", false));
                 print_ascii(AvatarASNI[i, 1]);
@@ -619,7 +629,7 @@ namespace test2
             print_ascii(AvatarASNI[i, 1]);
             Console.WriteLine("Press any Key to continue");
             Console.ReadLine();
-            SoundEngine.soundLibrary["Select"].Play();
+            SoundEngine.Sound.Play("Select");
             clear_and_print_header();
         }
 
@@ -632,7 +642,7 @@ namespace test2
                 {
 
                     if (i == 0)
-                        SoundEngine.soundLibrary["Intro"].Play();
+                        SoundEngine.Sound.Play("Intro");
                     byte newline = 20;
                     byte delay = 25;
                     Console.BackgroundColor = ConsoleColor.Cyan;
@@ -676,7 +686,7 @@ namespace test2
                     Console.WriteLine("\t\t\t\t  Press Any Key To Skip  ");
                     if (SkipTitleSleep(delay, 50))
                     {
-                        SoundEngine.soundLibrary["Swoosh"].Play();
+                        SoundEngine.Sound.Play("Swoosh");
                         _ = SoundEngine.soundLibrary["Intro"].Stop(1000);
                         first_run = false;
                         break;
@@ -717,7 +727,7 @@ namespace test2
                                     if (option_sound_on)
                                     {
 
-                                        SoundEngine.soundLibrary["Sweet"].Play();
+                                        SoundEngine.Sound.Play("Sweet");
                                     }
                                     continue;
                                 case 2:
@@ -756,8 +766,9 @@ namespace test2
                     case 4:
                         Console.Clear();
                         print_ascii(exit_logo);
-                        SoundEngine.soundLibrary["Bye"].Play();
+                        SoundEngine.Sound.Play("Bye");
                         Thread.Sleep(4000);
+                        //Delete file clean up should go here
                         Environment.Exit(0);
                         break;
                     default:
@@ -796,9 +807,7 @@ namespace test2
             byte menu_selector_pos = retain_pos;
             byte menu_select = 0;
             //Menu Caption
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("Menu: (Use Up/Down Arrow and Enter)");
-            Console.ForegroundColor = ConsoleColor.White;
+            TextColorize(("Yellow", "Menu: (Use Up/Down Arrow and Enter)", false));
             //Pre-print Menu
             for (byte i = 0; i < menu_label.Length; i++)
             {
@@ -817,7 +826,7 @@ namespace test2
                 {
                     clear_and_print_header();
                     scrolled = true;
-                    SoundEngine.soundLibrary["Scroll"].Play();
+                    SoundEngine.Sound.Play("Scroll");
 
                     Thread selectThread = new(() =>
                     {
@@ -849,10 +858,7 @@ namespace test2
                         }
 
 
-
-                        Console.ForegroundColor = ConsoleColor.Yellow;
-                        Console.WriteLine("Menu: (Use Up/Down Arrow and Enter)");
-                        Console.ForegroundColor = ConsoleColor.White;
+                        TextColorize(("Yellow", "Menu: (Use Up/Down Arrow and Enter)", false));
 
                         for (byte i = 0; i < menu_label.Length; i++)
                         {
@@ -874,7 +880,7 @@ namespace test2
 
                 if (Keypressed.Key == ConsoleKey.Enter)
                 {
-                    SoundEngine.soundLibrary["Select"].Play();
+                    SoundEngine.Sound.Play("Select");
                     menu_select = menu_selector_pos;
                     break;
                 }
@@ -943,14 +949,14 @@ namespace test2
             }
             if (game_mode != 0)
             {
-                Console.Write($"\u001b[38;2;128;128;128m");
-                Console.Write(Main_Menu_label[game_mode - 1]);
+
+                TextColorize(("grey", Main_Menu_label[game_mode - 1], true));
                 if (Level != 0)
                 {
-                    Console.Write(", Level: " + Level);
+                    TextColorize(("grey", $", Level: {Level}", true));
                     if (game_mode == 1)
                     {
-                        Console.Write($", Guesses Available: {allowed_guesses[0]}");
+                        TextColorize(("grey", $"Guesses Available: {allowed_guesses[0]}", true));
                     }
 
                 }
@@ -962,7 +968,6 @@ namespace test2
                     Console.WriteLine(prnt);
                 }
             }
-            Console.Write("\u001b[38;2;255;255;255m\n");
         }
 
         static void TextColorize(params (string? Color, string text, bool write)[] parts)
@@ -1196,21 +1201,38 @@ namespace test2
         public static Dictionary<string, Sound> soundLibrary = new();
 
         public static List<AutoLoopEndOfLifeSampleProvider> activeSounds = new();
-        public static void InitializeSoundEngine(Dictionary<string, string[]> SoundDictionary, string? save_folder = "tmp")
+        public static void InitializeSoundEngine(Dictionary<string, string[]> SoundDictionary, string? path = "use temp")
         {
             base64mp3wave_url_library = SoundDictionary;
-            if (save_folder is null or "tmp")
+            if (path is null or "use temp")
             {
                 try
                 {
-                    save_folder = Path.GetTempPath();
+                    DirectoryInfo save_folder = Directory.CreateTempSubdirectory("guessing");
+                    path = save_folder.FullName;
                 }
-                catch
+
+
+                catch (PathTooLongException)
                 {
-                    save_folder = ".";
+                    Program.WriteError("Path too long, when trying to write to temp subdirectory \"guessing\"");
 
                 }
+                catch (IOException)
+                {
+                    Program.WriteError("Unable to write folder!");
+
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    Program.WriteError("Unable to write folder, access denied.");
+                }
+
             }
+
+            path = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+
+
             var audio_out = new WaveOutEvent();
             var mixer = new MixingSampleProvider(WaveFormat.CreateIeeeFloatWaveFormat(44100, 2)) { ReadFully = true };
             audio_out.Init(mixer);
@@ -1218,7 +1240,7 @@ namespace test2
             foreach (KeyValuePair<string, string[]> base64 in SoundEngine.base64mp3wave_url_library)
             {
                 soundLibrary.Add(base64.Key, new Sound(mixer));
-                soundLibrary[base64.Key].OffLoadBase64(base64.Key, base64.Value[0], save_folder, base64.Value[1][..3], vol: float.Parse(base64.Value[3]));
+                soundLibrary[base64.Key].OffLoadBase64(base64.Key, base64.Value[0], path, base64.Value[1][..3], vol: float.Parse(base64.Value[3]));
             }
             SoundEngine.base64mp3wave_url_library.Clear();
         }
@@ -1263,12 +1285,39 @@ namespace test2
                     else
                     {
                         filename = Path.Combine(save_folder, $"{base64Value}.{ext}");
+                        if (!File.Exists(filename))
+                        {
+                            valid = false;
+                            Program.WriteError("External File Not found: " + filename);
+                        }
                     }
 
                 }
-                catch (FormatException) { Console.WriteLine("Base64 unexpected format"); valid = false; return false; }
-                catch (IOException) { Console.WriteLine("Issue writing file"); valid = false; return false; }
-                ;
+                //This can be improved by using catch e and itterating through exceptions to only declare valid once.
+                catch (Exception ex) when (
+       ex is ArgumentNullException or FormatException)
+                {
+                    valid = false;
+                    Program.WriteError("Base64 unexpected format or null");
+                }
+
+
+                catch (PathTooLongException)
+                {
+                    valid = false;
+                    Program.WriteError("Path too long, to write audio file.");
+                }
+                catch (IOException)
+                {
+                    valid = false;
+                    Program.WriteError("Unable to write audio file.");
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    valid = false;
+                    Program.WriteError("Unable to write audio file, access denied.");
+                }
+
                 return true;
             }
             private void RebuildPlaybackChain()
@@ -1338,7 +1387,25 @@ namespace test2
                 valid = false;
                 return true;
             }
-            public bool Play(float? vol = null, bool setLoop = false)
+            public static void Play(string Key, float? vol = null, bool setLoop = false)
+            {
+                try
+                {
+                    soundLibrary[Key].PlayInstance(vol, setLoop);
+                }
+                catch (ArgumentException)
+                {
+
+                    Program.WriteError("Wrong argument provided");
+
+                }
+                catch (KeyNotFoundException)
+                {
+
+                    Program.WriteError("Sound not found in soundLibrary.");
+                }
+            }
+            public bool PlayInstance(float? vol = null, bool setLoop = false)
             {
                 if (vol is null)
                 {
@@ -1431,7 +1498,6 @@ namespace test2
                 }
                 if (!active && read != 0)
                 {
-
                     active = true;
                 }
                 if ((read == 0 || read < count) && active)
