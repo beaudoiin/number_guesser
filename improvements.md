@@ -40,6 +40,7 @@
  This should allow of the menu to cycle around like a roller index, thus if we have a menu with 20 things it will be easier to see them all.
 * Consider a max options allowed in a row, then introduce new formatted row that checks the string length of the first menu, and places specific characters over by adding the extra tabs or whitespace.
  This allows for it to look like a grid or side by side list. Selector now should have the feature to go up, and, left and right, enter allows editing, enter allows to accept. (Maybe just using down arrows and cycling through is enough)
+* Turn menu into a class and allow object instance for each menu
  
 
 ## Sound Engine 
@@ -48,6 +49,9 @@
 * ISampleProvider should not be controlling the Logical Flow of Pause, Stop, Loop
 * Assets should be registered into a specific class as objects
 * Fade needs to be updated as there is a provided fade in and out option
+
+## Settings
+* Allow variables to be store in an xml or eternal configuration file.
 
 ## Documentation
 * Add comments to specific logical junctions or where needed, and to all methods and classes.
