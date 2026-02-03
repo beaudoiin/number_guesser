@@ -8,6 +8,7 @@
 ## General
 * Name spaces into one for Audio Engine for reuse and one for the main program
 * Give version number to EXE file and version number on the splash screen and in the Program Class comment to help link what is being run
+* break up classes into different name spaces or classes atleast for portability.
 
 ## Display
 * When a player wins or loses, the word Win/Lose with player name needs to be displayed
@@ -41,6 +42,13 @@
 * Consider a max options allowed in a row, then introduce new formatted row that checks the string length of the first menu, and places specific characters over by adding the extra tabs or whitespace.
  This allows for it to look like a grid or side by side list. Selector now should have the feature to go up, and, left and right, enter allows editing, enter allows to accept. (Maybe just using down arrows and cycling through is enough)
 * Turn menu into a class and allow object instance for each menu
+* menu should have several display items and handle a large amount of options
+* one view is center list
+*    center list with fading top and bottom items, roller deck style
+*    flat page style with columns
+*    sections of options with option background color and foreground, width termined by string length of labels.
+*    menu items can have optiona descriptions
+*    consider yaml or json for storing data
  
 
 ## Sound Engine 
