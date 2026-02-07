@@ -1,5 +1,6 @@
-﻿namespace Week4
+namespace Week4
 {
+
     internal class Program
     {
         static string BadInput = "BAD INPUT TRY again: ";
@@ -65,10 +66,16 @@
             }
         }
 
-
+        static void WriteEnergy(int attempts, string b)
+        {
+            Console.Write("Energy Level: ");
+            for (int i = 1; i < attempts + 1; i++) Console.Write(b);
+            Console.WriteLine();
+        }
         static void SurvivalGuessingGame()
         {
-            Console.WriteLine("Find the hidden number before your energy (attempts) runs out.");
+            string energy_string = Console.OutputEncoding.CodePage == 65001 ? "🍪" : "X";
+            Console.WriteLine("Find the hidden number before your \"Energy\"(attempts) runs out.");
             byte attempts = 7;
             int randNum = new Random().Next(1, 101);
             int lower = 1; int upper = 100; int userInput;
@@ -76,19 +83,18 @@
             {
                 if (attempts > 0)
                 {
-                    Console.WriteLine($"Energy Level: {attempts}");
+                    WriteEnergy(attempts, energy_string);
                     Console.WriteLine($"Enter b/w {lower} to {upper}");
                     if (!int.TryParse(Console.ReadLine(), out userInput))
                     { Console.WriteLine(BadInput); continue; }
                     attempts--;
                     if (userInput > randNum) { Console.WriteLine("Guess something smaller"); upper = userInput; }
                     else if (userInput < randNum) { Console.WriteLine("Guess something bigger"); lower = userInput; }
-                    else { Console.WriteLine($"Congratulations, it took you {7 - attempts} energy levels to guess it!\n"); return; }
+                    else { Console.WriteLine($"Game is over it took you {7 - attempts} times to guess it!"); confirm_return(); break; }
                 }
-                else { Console.WriteLine("Sorry, your energy ran out. You lost.\n"); return; }
+                else { Console.WriteLine($"Game is over it took you {7 - attempts} times and you still couldn't get it!"); confirm_return(); break; }
             }
         }
-
         static void MasterMindGuessingGame()
         {
             bool win = false;
@@ -222,9 +228,19 @@
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine($"\n{cpu_name}: {Choose("Taunt")}");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"{cpu_name}: Im sending you back to the main menu\n");
+            Console.WriteLine($"{cpu_name}: Im sending you back to the main menu");
+            confirm_return();
 
         }
+        static void confirm_return()
+        {
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.WriteLine("Press any key to return to the main menu.");
+            while (Console.KeyAvailable) Console.ReadKey(true);
+            Console.ReadKey();
+            Console.WriteLine();
+        }
+
         static string Choose(string Key, int upper = 0)
         {
             //Chooses the length of the Array @ dictionary key, otherwise th supplied upper limit
@@ -232,7 +248,7 @@
         }
         static void Main(string[] args)
         {
-
+            Console.OutputEncoding = System.Text.Encoding.UTF8;
             // main engine would be
             while (true)
             {
